@@ -95,7 +95,7 @@ export type MethodOptionsRealized = Omit<
 
 export type Fail = {
   status: number;
-  message?: string;
+  message: string;
   // @TODO should we allow fail payload to be typed with generics?
   payload?: any;
   timestamp: number;
