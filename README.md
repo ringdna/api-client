@@ -16,20 +16,18 @@ To use this library you will need to understand and implement the following:
 #### Api Config
 Config to determine the behavior of each api. Methods can specify which api they belong to.
 ```ts
-import { DefaultApi, ApiConfigs } from 'api-client/src/constants'
+import { DefaultApi, ApiConfigs } from '@ringdna/client/src/constants'
 
-const onRequestFail = (request, resource) =>
-  console.log('Request Fail', request, resource)
+const onRequestFail = (resource, client, err, request) =>
+  console.log('Request Fail', resource, err, request)
 
 const apis: ApiConfigs = {
   [DefaultApi]: {
-    headers: async () => ({
+    headers: {
       'Content-Type': 'application/json',
-      authorization: `Bearer ${token}`,
-      }
-    }),
+    },
     onRequestFail,
-    basePath: config.apiPath,
+    basePath: 'https://your-api.tld',
     debug: true
   },
 }
@@ -38,7 +36,7 @@ const apis: ApiConfigs = {
 #### Cache Strategy
 Cache strategies are actually just methods that are given access to the cache, and then set up relevant logic to manage it. For example `createResourceCountStrategy` sets a max number of cached requests, and culls the excess at startup.
 ```ts
-import { createResourceCountStrategy } from 'api-client/src/cache/resourceCountStrategy'
+import { createResourceCountStrategy } from '@ringdna/client/src/cache/resourceCountStrategy'
 
 const cacheStrategy = createResourceCountStrategy(500)
 ```
@@ -54,7 +52,7 @@ Create the client and provide it via context.
 #### Method Factories
 Method factories are used to create fetch hooks. Factories allow us to prebind the method config and domain types, resulting in much cleaner component code.
 ```ts
-import { createUseFetch, createUseFetchAction } from 'opticlient/src/react/createUseFetch'
+import { createUseFetch, createUseFetchAction } from '@ringdna/client/src/react/createUseFetch'
 
 type Payload = {
   id: number
@@ -84,7 +82,7 @@ export const useProfileGet = createUseFetch<Payload, Params>({
 
 #### Method Factories, with params & dynamic paths
 ```ts
-import { createUseFetch } from 'opticlient/src/react/createUseFetch'
+import { createUseFetch } from '@ringdna/client/src/react/createUseFetch'
 
 type Payload = {
   id: number
@@ -159,7 +157,7 @@ export const useProfileGet = createUseFetch<Payload, Params>({
 The client is suspense ready. In order to prevent "waterfall loading states" opticlient provides a mechanism for priming requests at the suspense boundary.
 ```tsx
 
-import { createUseFetchSuspense } from 'api-client/src/react/suspense'
+import { createUseFetchSuspense } from '@ringdna/client/src/react/suspense'
 import { Profile } from './types'
 
 let [useProfileGetSuspender, useProfileGetPrimer] = createUseFetchSuspense<Profile>({
@@ -203,8 +201,8 @@ function UserProfile() {
 #### Paging
 Paging support can be added via `createUsePagedFetch`
 ```tsx
-import { createUsePagedFetch } from 'api-client/src/react/pagedMethodFactory'
-import { Resource } from 'api-client/src/constants'
+import { createUsePagedFetch } from '@ringdna/client/src/react/createUsePagedFetch'
+import { Resource } from '@ringdna/client/src/constants'
 
 type PagedProfiles = Array<{
   id: number
