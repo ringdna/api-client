@@ -62,7 +62,7 @@ export type OnRequestFail = (
 export type ApiConfig = {
   basePath: string;
   onRequestFail: OnRequestFail;
-  headers?: JsonObject;
+  headers?: { [key: string]: string };
   authenticator?: Authenticator;
   debug?: boolean;
   onRequest?: (request: Promise<Response>) => any;
@@ -99,7 +99,7 @@ export type Fail = {
   message: string;
   // @TODO should we allow fail payload to be typed with generics?
   payload?: any;
-  headers?: JsonObject;
+  headers?: { [key: string]: string };
   timestamp: number;
   terminal: boolean;
 };
@@ -114,7 +114,7 @@ export type Resource<Payload, Params> = {
   success?: {
     status: number;
     payload: Payload;
-    headers?: JsonObject;
+    headers?: { [key: string]: string };
     timestamp: number;
   };
   fail?: Fail;
@@ -150,7 +150,7 @@ export type ReturnTuple<Payload, Params> = [
   Fail | undefined,
   Loading<Payload, Params>,
   Refetch<Payload, Params>,
-  Resource<Payload, Params> | void
+  Resource<Payload, Params> | undefined
 ];
 
 type StringOrNull = string | null;
