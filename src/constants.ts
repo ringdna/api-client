@@ -82,6 +82,7 @@ export type MethodOptions<Params extends ParamsGeneric | void> = {
   cache?: CacheType; // default to memory
   independent?: boolean; // default to false for GET, true for others
   headers?: { [key: string]: string };
+  extractHeaders?: true;
 };
 
 export type MethodOptionsGeneric = MethodOptions<ParamsGeneric>;
@@ -98,6 +99,7 @@ export type Fail = {
   message: string;
   // @TODO should we allow fail payload to be typed with generics?
   payload?: any;
+  headers?: JsonObject;
   timestamp: number;
   terminal: boolean;
 };
@@ -112,6 +114,7 @@ export type Resource<Payload, Params> = {
   success?: {
     status: number;
     payload: Payload;
+    headers?: JsonObject;
     timestamp: number;
   };
   fail?: Fail;
