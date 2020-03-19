@@ -91,7 +91,13 @@ function createUsePagedFetch<Payload, Params extends ParamsGeneric = void | null
       let next = () => {
         if (activeRequest.current) return activeRequest.current
         page.current++
-        let cacheKey = inferCacheKey(methodOptions.key, CacheType.Memory, false, paramsString + String(page.current))
+        let cacheKey = inferCacheKey(
+          methodOptions.api,
+          methodOptions.key,
+          CacheType.Memory,
+          false,
+          paramsString + String(page.current)
+        )
         let cursor = pagerOptions.getCursor(page.current, lastPage)
 
         // @TODO get rid of the type coercion

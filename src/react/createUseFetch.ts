@@ -24,6 +24,19 @@ export type HookOptions = {
 }
 
 function createUseFetch<Payload, Params extends ParamsGeneric = void | null>(methodOptions: MethodOptions<Params>) {
+  if (process.env.NODE_ENV !== 'production') {
+    // @NOTE if you change any of this code, createFetch needs to be updated too
+    // @ts-ignore
+    let ck = globalThis._client_keys || new Set()
+    if (ck.has(methodOptions.key))
+      throw new Error(
+        `You are trying to create a second api method with key: ${methodOptions.key}. This is not supported and can lead to abberant behavior.`
+      )
+    ck.add(methodOptions.key)
+    // @ts-ignore
+    globalThis._client_keys = ck
+  }
+
   return (params: Params, hookOptions: HookOptions = {}): ReturnTuple<Payload, Params> => {
     methodOptions.method = methodOptions.method || HttpMethods.Get
     let independent =
@@ -37,7 +50,10 @@ function createUseFetch<Payload, Params extends ParamsGeneric = void | null>(met
     }, [params])
 
     let cacheKey = useMemo(() => {
-      return hookOptions.cacheKey || inferCacheKey(methodOptions.key, cacheType, independent, paramsString)
+      return (
+        hookOptions.cacheKey ||
+        inferCacheKey(methodOptions.api, methodOptions.key, cacheType, independent, paramsString)
+      )
     }, [hookOptions.cacheKey, cacheType, paramsString, independent])
 
     let client = useClient()
@@ -71,6 +87,7 @@ function createUseFetch<Payload, Params extends ParamsGeneric = void | null>(met
       })
     }, [cache, cacheKey, params, paused])
 
+    // @TODO do we really need to support override params here? could remove and simplify, but still need a way to support the paged use case
     // @ts-ignore not sure how to get Params an ParamsGeneric subtypes to match
     let refetch: Refetch<Payload, Params> = useCallback(
       (overrideParams?: Params, overrideCacheKey?: string) => {
@@ -80,7 +97,7 @@ function createUseFetch<Payload, Params extends ParamsGeneric = void | null>(met
         let fetchCacheKey = overrideCacheKey
           ? overrideCacheKey
           : overrideParams
-          ? inferCacheKey(methodOptions.key, cacheType, independent, JSON.stringify(overrideParams))
+          ? inferCacheKey(methodOptions.api, methodOptions.key, cacheType, independent, JSON.stringify(overrideParams))
           : cacheKey
 
         resourceRef.current = {
