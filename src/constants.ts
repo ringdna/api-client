@@ -34,7 +34,8 @@ export enum RequestStage {
 }
 
 export type ParamsGeneric = {
-  body?: JsonObject
+  body?: any
+  json?: JsonObject
   query?: JsonObject
   headers?: JsonObject
   meta?: JsonObject

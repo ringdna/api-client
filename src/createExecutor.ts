@@ -29,7 +29,11 @@ function createExecutor(apis: ApiConfigs): Executor {
     let apiConfig = apis[methodOptions.api || DefaultApi]
     if (!apiConfig) throw new Error('Invariant: missing api definition')
 
-    let { query: paramsQuery, body: paramsBody, headers: paramsHeaders } = params || {}
+    let { query: paramsQuery, body: paramsBody, headers: paramsHeaders, json } = params || {}
+
+    // dev check to ensure only one of json or body is provided
+    if (process.env.NODE_ENV !== 'production' && json && paramsBody)
+      console.error('Api Client request cannot supply both body and json. Only json will be used.')
 
     let p = new Promise<ResourceGeneric>(async (resolve, reject) => {
       let { handleResponse, prepareBody, authenticator } = apiConfig
@@ -51,7 +55,7 @@ function createExecutor(apis: ApiConfigs): Executor {
 
       let headers = Object.assign({}, apiConfig.headers, methodHeaders, paramsHeaders, auth && auth.headers)
 
-      let body = prepareBody ? await prepareBody(resource.params) : JSON.stringify(paramsBody)
+      let body = prepareBody ? await prepareBody(resource.params) : json ? JSON.stringify(json) : paramsBody
 
       let url = `${apiConfig.basePath}${path}${paramsQuery ? `?${urlSearchParams.toString()}` : ''}`
       if (apiConfig.debug) console.log(`## client fetch ${url}`, { headers, method, body })
