@@ -74,7 +74,10 @@ function createUsePagedFetch<Payload, Params extends ParamsGeneric = void | null
     }, [paramsString]) // eslint-disable-line
 
     // @TODO get rid of the Params coercion
-    let [, , , refetch, firstPage] = useFetch(baseAppliedParams as Params, { ...hookOptions, cacheKey: baseCacheKey })
+    let [, , , refetch, firstPage] = useFetch(baseAppliedParams as Params, {
+      ...hookOptions,
+      cacheKey: baseCacheKey
+    })
 
     let pages = [firstPage]
     let lastPage = pages[page.current] || undefined

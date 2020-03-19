@@ -42,7 +42,7 @@ function ClientSuspenseBoundary({ usePrimer, children, ...suspenseProps }: Prime
 
 type SuspenseTuple<Payload, Params> = [ReturnType<typeof createUseFetch>, ReturnType<typeof createUseFetch>]
 
-function createUseFetchSuspense<Payload, Params extends ParamsGeneric | void = void>(
+function createUseFetchSuspense<Payload, Params extends ParamsGeneric = undefined>(
   methodOptions: MethodOptions<Params>
 ) {
   let useFetch = createUseFetch<Payload, Params>(methodOptions)
