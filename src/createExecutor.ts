@@ -87,7 +87,7 @@ function createExecutor(apis: ApiConfigs): Executor {
             })
           if (extractHeaders)
             // @ts-ignore ts not yet up to date on these es2019 methods
-            finalResource.headers = Object.fromEntries(
+            finalResource.success.headers = Object.fromEntries(
               // @ts-ignore ts not yet up to date on these es2019 methods
               response.headers.entries()
             )
@@ -111,7 +111,7 @@ function createExecutor(apis: ApiConfigs): Executor {
         // @ts-ignore
         if (extractHeaders)
           // @ts-ignore ts not yet up to date on these es2019 methods
-          finalResource.headers = Object.fromEntries(
+          finalResource.fail.headers = Object.fromEntries(
             // @ts-ignore ts not yet up to date on these es2019 methods
             response.headers.entries()
           )
