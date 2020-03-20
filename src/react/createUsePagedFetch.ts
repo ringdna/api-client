@@ -65,7 +65,7 @@ function createUsePagedFetch<Payload, Params extends ParamsGeneric = void | null
     let { cache } = client
 
     let baseCacheKey = useMemo(() => {
-      return inferCacheKey(methodOptions.key, CacheType.Disk, false, paramsString + String(0))
+      return inferCacheKey(methodOptions.api, methodOptions.key, CacheType.Disk, false, paramsString + String(0))
     }, [paramsString])
 
     let baseAppliedParams = useMemo(() => {
@@ -82,7 +82,13 @@ function createUsePagedFetch<Payload, Params extends ParamsGeneric = void | null
     let pages = [firstPage]
     let lastPage = pages[page.current] || undefined
     for (let i = 1; i <= page.current; i++) {
-      let cacheKey = inferCacheKey(methodOptions.key, CacheType.Memory, false, paramsString + String(i))
+      let cacheKey = inferCacheKey(
+        methodOptions.api,
+        methodOptions.key,
+        CacheType.Memory,
+        false,
+        paramsString + String(i)
+      )
       let resource = cache.get(cacheKey) as Resource<Payload, Params>
       pages[i] = resource
     }
