@@ -18,7 +18,8 @@ export enum HttpMethods {
   Get = 'GET',
   Post = 'POST',
   Put = 'PUT',
-  Delete = 'DELETE'
+  Delete = 'DELETE',
+  Patch = 'PATCH'
 }
 
 export enum CacheType {
