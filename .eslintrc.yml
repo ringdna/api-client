@@ -4,13 +4,14 @@ env:
   browser: true
   jest: true
   es6: true
+globals:
+  globalThis: false
 plugins: 
   - react-hooks
 extends:
   - eslint:recommended
   - plugin:react/recommended
   - plugin:@typescript-eslint/recommended
-  - plugin:jsx-a11y/recommended
   - prettier
   - prettier/@typescript-eslint
 rules:
@@ -28,3 +29,4 @@ rules:
   "no-async-promise-executor": 0                            # preference
   "@typescript-eslint/no-empty-function": 0                 # preference
   "@typescript-eslint/no-parameter-properties": 0           # preference
+  "@typescript-eslint/camelcase": 0                         # preference
