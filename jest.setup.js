@@ -3,6 +3,6 @@ import {installMockStorage, ensureMocksReset, requestIdleCallback} from '@shopif
 installMockStorage();
 requestIdleCallback.mock()
 
-beforeEach(() => {
+afterEach(() => {
   ensureMocksReset();
 });
